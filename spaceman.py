@@ -133,5 +133,4 @@ def spaceman(secret_word):
 
 
 #These function calls that will start the game
-secret_word = load_word()
 spaceman(load_word())
