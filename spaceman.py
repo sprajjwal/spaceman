@@ -1,4 +1,5 @@
 import random
+import os
 alphabet = "abcdefghijklmnopqrstuvwxyz"
 
 def load_word():
@@ -10,10 +11,28 @@ def load_word():
     secret_word = random.choice(words_list)
     return secret_word
 
+def check_new_word(secret_word, letters_guessed, new_word):
+    if len(secret_word) != len(new_word):
+        return True
+    for index in range(len(secret_word)):
+        if secret_word[index] in letters_guessed:
+            if new_word[index] != secret_word[index]:
+                return True
+    for letter in new_word:
+        if letter in 
+    return False
+
+def randomize_word(secret_word, letters_guessed):
+    new_word = load_word()
+    while check_new_word(secret_word, letters_guessed, new_word):
+        new_word = load_word()
+    return new_word
+
+
 def is_word_guessed(secret_word, letters_guessed):
     for letters in secret_word:
         if letters in letters_guessed:
-            pass
+            return True
         else:
             return False
     # TODO: Loop through the letters in the secret_word and check if a letter is not in lettersGuessed
@@ -50,7 +69,7 @@ def not_guessed_string(guessed_letters):
 
 def spaceman(secret_word):
   
-    guesses = 7  #number of guesses player has left
+    guesses = len(secret_word)  #number of guesses player has left
     letters_guessed = ""
 
     #TODO: show the player information about the game according to the project spec
@@ -77,6 +96,8 @@ def spaceman(secret_word):
         #TODO: Check if the guessed letter is in the secret or not and give the player feedback
         if is_guess_in_word(guess, secret_word):
             print("Your Guess appears in the word!")
+            print("Test: " + secret_word )
+            secret_word = randomize_word(secret_word, letters_guessed)
         else:
             print("Sorry your guess was not in the word, try again")
             guesses -= 1
@@ -96,5 +117,13 @@ def spaceman(secret_word):
             break
 
 #These function calls that will start the game
-secret_word = load_word()
-spaceman(load_word())
+playing = True
+while playing == True:
+    playing = False
+    os.system('clear')
+    secret_word = load_word()
+    spaceman(load_word())
+    if input("Would you like to play again?(Y/N)") in "Yy":
+        playing = True
+    else:
+        print("Have a good day!")
