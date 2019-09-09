@@ -28,12 +28,12 @@ def create_word_base(secret_word, index_guessed):
     f.close()
 
 #function that returns a strin of indices for matching character 
-def create_index_string(secret_word, letter_guessed):
-    index_string = []
+def create_index_list(secret_word, letter_guessed):
+    index_list= []
     for index in range(len(secret_word)):
         if secret_word[index] == letter_guessed:
-            index_string.append(index)
-    return index_string
+            index_list.append(index)
+    return index_list
 
 def check_new_word(secret_word, letters_guessed, new_word):
     if len(secret_word) != len(new_word):
@@ -49,22 +49,21 @@ def check_new_word(secret_word, letters_guessed, new_word):
 
 #function that changes the secret_word to a random word
 def randomize_word(secret_word, letters_guessed):
-    index = 0
-    for index in range(len(word_base)):
-        while check_new_word(secret_word, letters_guessed, word_base[index]):
-            pass
-        if index == len(word_base)-1:
-            return secret_word
-    print("index: " + str(index) + " word_base length: " + str(len(word_base)) )
-    return word_base[index]
+    for words in word_base:
+        if check_new_word(secret_word, letters_guessed, words) == False:
+            return word
+    else:
+        return secret_word
+
 
 #function that checks if the whole word is guessed
 def is_word_guessed(secret_word, letters_guessed):
     for letters in secret_word:
         if letters in letters_guessed:
-            return True
+            pass
         else:
             return False
+    return True
     # TODO: Loop through the letters in the secret_word and check if a letter is not in lettersGuessed
 
 #function that makes a string of guess for user with __s
@@ -129,7 +128,7 @@ def spaceman(secret_word):
             print("Your Guess appears in the word!")
             print("Test: " + secret_word )
             if len(word_base) == 0:
-                create_word_base(secret_word, create_index_string(secret_word, guess))
+                create_word_base(secret_word, create_index_list(secret_word, guess))
             secret_word = randomize_word(secret_word, letters_guessed)
             print("new secret word: " + secret_word)
         else:
