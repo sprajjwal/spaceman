@@ -1,15 +1,39 @@
 import random
 import os
 alphabet = "abcdefghijklmnopqrstuvwxyz"
+word_base = []
 
+#function to load a random word from the file
 def load_word():
     f = open('words.txt', 'r')
     words_list = f.readlines()
     f.close()
-
     words_list = words_list[0].split(' ')
     secret_word = random.choice(words_list)
     return secret_word
+
+#function that creates word base that we randomize words from
+def create_word_base(secret_word, index_guessed):
+    print("Creating word base!")
+    with open('words.txt','r') as f:
+        for line in f:
+            for word in line.split():
+                if len(word) == len(secret_word):
+                    add_to_list = True
+                    for index in index_guessed:
+                        if word[int(index)] != secret_word[int(index)]:
+                            add_to_list = False
+                    if add_to_list:
+                        word_base.append(word)
+    f.close()
+
+#function that returns a strin of indices for matching character 
+def create_index_string(secret_word, letter_guessed):
+    index_string = []
+    for index in range(len(secret_word)):
+        if secret_word[index] == letter_guessed:
+            index_string.append(index)
+    return index_string
 
 def check_new_word(secret_word, letters_guessed, new_word):
     if len(secret_word) != len(new_word):
@@ -19,16 +43,22 @@ def check_new_word(secret_word, letters_guessed, new_word):
             if new_word[index] != secret_word[index]:
                 return True
     for letter in new_word:
-        if letter in 
+        if letter in letters_guessed:
+            return True
     return False
 
+#function that changes the secret_word to a random word
 def randomize_word(secret_word, letters_guessed):
-    new_word = load_word()
-    while check_new_word(secret_word, letters_guessed, new_word):
-        new_word = load_word()
-    return new_word
+    index = 0
+    for index in range(len(word_base)):
+        while check_new_word(secret_word, letters_guessed, word_base[index]):
+            pass
+        if index == len(word_base)-1:
+            return secret_word
+    print("index: " + str(index) + " word_base length: " + str(len(word_base)) )
+    return word_base[index]
 
-
+#function that checks if the whole word is guessed
 def is_word_guessed(secret_word, letters_guessed):
     for letters in secret_word:
         if letters in letters_guessed:
@@ -37,6 +67,7 @@ def is_word_guessed(secret_word, letters_guessed):
             return False
     # TODO: Loop through the letters in the secret_word and check if a letter is not in lettersGuessed
 
+#function that makes a string of guess for user with __s
 def get_guessed_word(secret_word, letters_guessed):
     guessed_word = ""
     for letters in secret_word:
@@ -48,7 +79,7 @@ def get_guessed_word(secret_word, letters_guessed):
     #TODO: Loop through the letters in secret word and build a string that shows the letters that have been guessed correctly so far that are saved in letters_guessed and underscores for the letters that have not been guessed yet
 
 
-
+# function that checks if guessed letter is in secret word
 def is_guess_in_word(guess, secret_word):
    #check if the letter guess is in the secret word
     if guess in secret_word:
@@ -97,7 +128,10 @@ def spaceman(secret_word):
         if is_guess_in_word(guess, secret_word):
             print("Your Guess appears in the word!")
             print("Test: " + secret_word )
+            if len(word_base) == 0:
+                create_word_base(secret_word, create_index_string(secret_word, guess))
             secret_word = randomize_word(secret_word, letters_guessed)
+            print("new secret word: " + secret_word)
         else:
             print("Sorry your guess was not in the word, try again")
             guesses -= 1
