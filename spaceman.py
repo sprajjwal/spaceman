@@ -1,4 +1,4 @@
-import random
+from random import shuffle, choice
 import os
 alphabet = "abcdefghijklmnopqrstuvwxyz"
 word_base = []
@@ -9,7 +9,7 @@ def load_word():
     words_list = f.readlines()
     f.close()
     words_list = words_list[0].split(' ')
-    secret_word = random.choice(words_list)
+    secret_word = choice(words_list)
     return secret_word
 
 #function that creates word base that we randomize words from
@@ -23,7 +23,7 @@ def create_word_base(secret_word, index_guessed):
                     for index in index_guessed:
                         if word[int(index)] != secret_word[int(index)]:
                             add_to_list = False
-                    for index in range(len(guessed_word)):
+                    for index in range(len(word)):
                         if index !=int(index_guessed[0]) and word[index] == secret_word[int(index_guessed[0])]:
                             add_to_list = False
                     if add_to_list:
@@ -56,8 +56,12 @@ def check_new_word(secret_word, letters_guessed, new_word):
 
 #function that changes the secret_word to a random word
 def randomize_word(secret_word, letters_guessed):
+    print("trying to randomize from word base: " + str(len(word_base)))
+    shuffle(word_base)
     for words in word_base:
-        if check_new_word(secret_word, letters_guessed, words) == False:
+        if words == secret_word:
+            pass
+        elif check_new_word(secret_word, letters_guessed, words) == False:
             return words
     else:
         return secret_word
