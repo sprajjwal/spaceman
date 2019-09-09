@@ -35,6 +35,7 @@ def create_index_list(secret_word, letter_guessed):
             index_list.append(index)
     return index_list
 
+#checks new_word 
 def check_new_word(secret_word, letters_guessed, new_word):
     if len(secret_word) != len(new_word):
         return True
@@ -44,14 +45,17 @@ def check_new_word(secret_word, letters_guessed, new_word):
                 return True
     for letter in new_word:
         if letter in letters_guessed:
-            return True
+            if letter in secret_word:
+                pass
+            else:
+                return True
     return False
 
 #function that changes the secret_word to a random word
 def randomize_word(secret_word, letters_guessed):
     for words in word_base:
         if check_new_word(secret_word, letters_guessed, words) == False:
-            return word
+            return words
     else:
         return secret_word
 
