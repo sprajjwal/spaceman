@@ -1,7 +1,9 @@
 from random import shuffle, choice
 import os
+import pyfiglet
+
 alphabet = "abcdefghijklmnopqrstuvwxyz"
-word_base = []
+word_base = [] #list of words to hold compatible with the original secret word
 
 #function to load a random word from the file
 def load_word():
@@ -56,7 +58,6 @@ def check_new_word(secret_word, letters_guessed, new_word):
 
 #function that changes the secret_word to a random word
 def randomize_word(secret_word, letters_guessed):
-    print("trying to randomize from word base: " + str(len(word_base)))
     shuffle(word_base)
     for words in word_base:
         if words == secret_word:
@@ -75,7 +76,6 @@ def is_word_guessed(secret_word, letters_guessed):
         else:
             return False
     return True
-    # TODO: Loop through the letters in the secret_word and check if a letter is not in lettersGuessed
 
 #function that makes a string of guess for user with __s
 def get_guessed_word(secret_word, letters_guessed):
@@ -86,8 +86,6 @@ def get_guessed_word(secret_word, letters_guessed):
         else: 
             guessed_word += '_'
     return guessed_word
-    #TODO: Loop through the letters in secret word and build a string that shows the letters that have been guessed correctly so far that are saved in letters_guessed and underscores for the letters that have not been guessed yet
-
 
 # function that checks if guessed letter is in secret word
 def is_guess_in_word(guess, secret_word):
@@ -112,15 +110,12 @@ def spaceman(secret_word):
   
     guesses = len(secret_word)  #number of guesses player has left
     letters_guessed = ""
-
-    #TODO: show the player information about the game according to the project spec
-    print("----------Welcome to Spaceman!----------\n\n\n")
+    print(pyfiglet.figlet_format("Welcome to Spaceman!"))
     print("The secret word contains: " + str(len(secret_word)) + " letters")
     print("You have " + str(guesses) + " incorrect guesses, please enter one letter per round")
     print("----------------------------------------")
 
     while guesses > 0 :
-        #TODO: Ask the player to guess one letter per round and check that it is only one letter
         input_valid = False
         while input_valid == False:
             guess = input("Enter a letter: ").lower()
@@ -134,7 +129,7 @@ def spaceman(secret_word):
                 print("Please only enter a letter")
 
         letters_guessed += guess
-        #TODO: Check if the guessed letter is in the secret or not and give the player feedback
+        os.system('clear')
         if is_guess_in_word(guess, secret_word):
             print("Your Guess appears in the word!")
             print("Test: " + secret_word )
@@ -145,13 +140,14 @@ def spaceman(secret_word):
         else:
             print("Sorry your guess was not in the word, try again")
             guesses -= 1
-        #TODO: show the guessed word so far
+
         if guesses > 0:
             print("You have " + str(guesses) + " incorrect guesses left")
             print("Guessed word so far: " + get_guessed_word(secret_word, letters_guessed))
             print("These letters haven't been guessed yet: " + not_guessed_string(letters_guessed))
             if is_word_guessed(secret_word, letters_guessed):
-                print("You won!")
+                os.system('clear')
+                print(pyfiglet.figlet_format("You won!"))
                 break
             else:
                 print("----------------------------------------")
@@ -160,14 +156,18 @@ def spaceman(secret_word):
             print("The word was: " + secret_word)
             break
 
-#These function calls that will start the game
-playing = True
-while playing == True:
-    playing = False
-    os.system('clear')
-    secret_word = load_word()
-    spaceman(load_word())
-    if input("Would you like to play again?(Y/N)") in "Yy":
-        playing = True
-    else:
-        print("Have a good day!")
+# Main program
+def main():
+    playing = True
+    while playing == True:
+        playing = False
+        os.system('clear')
+        secret_word = load_word()
+        spaceman(load_word())
+        if input("Would you like to play again?(Y/N): ") in "Yy":
+            playing = True
+        else:
+            print("Have a good day!")
+
+if __name__ == '__main__':
+    main()
