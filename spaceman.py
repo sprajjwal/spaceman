@@ -2,11 +2,12 @@ from random import shuffle, choice
 import os
 import pyfiglet
 
-alphabet = "abcdefghijklmnopqrstuvwxyz"
+# global variables 
+alphabet = "abcdefghijklmnopqrstuvwxyz" 
 word_base = [] #list of words to hold compatible with the original secret word
 
-#function to load a random word from the file
 def load_word():
+    """ loads a random word from 'words.txt'"""
     f = open('words.txt', 'r')
     words_list = f.readlines()
     f.close()
@@ -14,13 +15,15 @@ def load_word():
     secret_word = choice(words_list)
     return secret_word
 
-#function that creates word base that we randomize words from
 def create_word_base(secret_word, index_guessed):
+
+    """function that creates word base that we randomize words from"""
     print("Creating word base!")
     with open('words.txt','r') as f:
         for line in f:
             for word in line.split():
                 if len(word) == len(secret_word):
+                    #checking each $word for different parameters to add to base
                     add_to_list = True
                     for index in index_guessed:
                         if word[int(index)] != secret_word[int(index)]:
@@ -31,54 +34,56 @@ def create_word_base(secret_word, index_guessed):
                     if add_to_list:
                         word_base.append(word)
     f.close()
-
-#function that returns a strin of indices for matching character 
+ 
 def create_index_list(secret_word, letter_guessed):
+    """function that returns a string of indices for matching character
+    for secret_word banana and guess 'a' it will return{1,3,5}"""
     index_list= []
     for index in range(len(secret_word)):
         if secret_word[index] == letter_guessed:
             index_list.append(index)
     return index_list
 
-#checks new_word 
 def check_new_word(secret_word, letters_guessed, new_word):
+    """ checks the new word if it can replace the original secret word based on all
+    the letters that have been used as guesses"""
     if len(secret_word) != len(new_word):
-        return True
+        return False
     for index in range(len(secret_word)):
         if secret_word[index] in letters_guessed:
             if new_word[index] != secret_word[index]:
-                return True
+                return False
     for letter in new_word:
         if letter in letters_guessed:
             if letter in secret_word:
                 pass
             else:
-                return True
-    return False
+                return False
+    return True # False if the word passes all tests
 
-#function that changes the secret_word to a random word
 def randomize_word(secret_word, letters_guessed):
+    """function that changes the secret_word to a random word"""
     shuffle(word_base)
     for words in word_base:
         if words == secret_word:
             pass
-        elif check_new_word(secret_word, letters_guessed, words) == False:
+        elif check_new_word(secret_word, letters_guessed, words):
             return words
-    else:
+    else: #if we don't find a replacement
         return secret_word
 
-
-#function that checks if the whole word is guessed
 def is_word_guessed(secret_word, letters_guessed):
+    """function that checks if the whole word is guessed"""
     for letters in secret_word:
         if letters in letters_guessed:
             pass
         else:
             return False
-    return True
+    return True #Game won
 
-#function that makes a string of guess for user with __s
+
 def get_guessed_word(secret_word, letters_guessed):
+    """function that makes a string of guess for user with __e__"""
     guessed_word = ""
     for letters in secret_word:
         if letters in letters_guessed:
@@ -87,17 +92,16 @@ def get_guessed_word(secret_word, letters_guessed):
             guessed_word += '_'
     return guessed_word
 
-# function that checks if guessed letter is in secret word
 def is_guess_in_word(guess, secret_word):
-   #check if the letter guess is in the secret word
+    """function that checks if guessed letter is in secret word"""
     if guess in secret_word:
         return True
     else:
         return False
 
 
-#helper function that returns letters that haven't been guessed yet
 def not_guessed_string(guessed_letters):
+    """ helper function that returns letters that haven't been guessed yet"""
     not_guessed_string=""
     for letters in alphabet:
         if letters in guessed_letters:
@@ -106,18 +110,20 @@ def not_guessed_string(guessed_letters):
             not_guessed_string += letters
     return not_guessed_string
 
+
 def spaceman(secret_word):
-  
+    """ the main game function that carries out the game"""
     guesses = len(secret_word)  #number of guesses player has left
     letters_guessed = ""
     print(pyfiglet.figlet_format("Welcome to Spaceman!"))
+    print("----------------------------------------")
     print("The secret word contains: " + str(len(secret_word)) + " letters")
     print("You have " + str(guesses) + " incorrect guesses, please enter one letter per round")
     print("----------------------------------------")
 
-    while guesses > 0 :
+    while guesses > 0 : #in-game loop
         input_valid = False
-        while input_valid == False:
+        while input_valid == False: #loop for input validation
             guess = input("Enter a letter: ").lower()
             if guess in letters_guessed:
                 print("You have alreadye guessed " + guess)
@@ -130,18 +136,19 @@ def spaceman(secret_word):
 
         letters_guessed += guess
         os.system('clear')
-        if is_guess_in_word(guess, secret_word):
+
+        if is_guess_in_word(guess, secret_word): # correct guess
             print("Your Guess appears in the word!")
             print("Test: " + secret_word )
             if len(word_base) == 0:
                 create_word_base(secret_word, create_index_list(secret_word, guess))
             secret_word = randomize_word(secret_word, letters_guessed)
             print("new secret word: " + secret_word)
-        else:
+        else: # incorrect guess
             print("Sorry your guess was not in the word, try again")
             guesses -= 1
 
-        if guesses > 0:
+        if guesses > 0: #  game running
             print("You have " + str(guesses) + " incorrect guesses left")
             print("Guessed word so far: " + get_guessed_word(secret_word, letters_guessed))
             print("These letters haven't been guessed yet: " + not_guessed_string(letters_guessed))
@@ -151,7 +158,7 @@ def spaceman(secret_word):
                 break
             else:
                 print("----------------------------------------")
-        else:
+        else: #game lost
             print("Sorry you didn't win, try again!")
             print("The word was: " + secret_word)
             break
@@ -159,10 +166,9 @@ def spaceman(secret_word):
 # Main program
 def main():
     playing = True
-    while playing == True:
+    while playing == True: # new game loop
         playing = False
         os.system('clear')
-        secret_word = load_word()
         spaceman(load_word())
         if input("Would you like to play again?(Y/N): ") in "Yy":
             playing = True
