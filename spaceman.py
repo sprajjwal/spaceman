@@ -23,6 +23,9 @@ def create_word_base(secret_word, index_guessed):
                     for index in index_guessed:
                         if word[int(index)] != secret_word[int(index)]:
                             add_to_list = False
+                    for index in range(len(guessed_word)):
+                        if index !=int(index_guessed[0]) and word[index] == secret_word[int(index_guessed[0])]:
+                            add_to_list = False
                     if add_to_list:
                         word_base.append(word)
     f.close()
