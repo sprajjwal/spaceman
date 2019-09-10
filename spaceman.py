@@ -139,11 +139,13 @@ def spaceman(secret_word):
 
         if is_guess_in_word(guess, secret_word): # correct guess
             print("Your Guess appears in the word!")
-            print("Test: " + secret_word )
+            #uncomment next line to see secret word change
+            # print("Test: " + secret_word )
             if len(word_base) == 0:
                 create_word_base(secret_word, create_index_list(secret_word, guess))
             secret_word = randomize_word(secret_word, letters_guessed)
-            print("new secret word: " + secret_word)
+            #uncomment next line to see secret word change
+            # print("new secret word: " + secret_word)
         else: # incorrect guess
             print("Sorry your guess was not in the word, try again")
             guesses -= 1
