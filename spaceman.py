@@ -157,6 +157,7 @@ def spaceman(secret_word):
             if is_word_guessed(secret_word, letters_guessed):
                 os.system('clear')
                 print(pyfiglet.figlet_format("You won!"))
+                print("The secret word was: " + secret_word)
                 break
             else:
                 print("----------------------------------------")
