@@ -37,7 +37,7 @@ def create_word_base(secret_word, index_guessed):
  
 def create_index_list(secret_word, letter_guessed):
     """function that returns a string of indices for matching character
-    for secret_word banana and guess 'a' it will return{1,3,5}"""
+    for secret_word banana and guess 'a' it will return[1,3,5]"""
     index_list= []
     for index in range(len(secret_word)):
         if secret_word[index] == letter_guessed:
